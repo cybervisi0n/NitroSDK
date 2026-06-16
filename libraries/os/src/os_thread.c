@@ -595,7 +595,7 @@ void OS_CreateThread (OSThread * thread, void (*func)(void *), void * arg, void 
 
     #ifdef SDK_PORT
     if(stackSize != 0) {
-        MI_CpuClear32((void *)((u32)stack - stackSize + sizeof(u32)), stackSize - sizeof(u32) * 2);
+        MI_CpuClear32((void *)((u64)stack - stackSize + sizeof(u32)), stackSize - sizeof(u32) * 2);
     }
     #else
     MI_CpuClear32((void *)((u32)stack - stackSize + sizeof(u32)), stackSize - sizeof(u32) * 2);

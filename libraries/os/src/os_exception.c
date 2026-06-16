@@ -58,6 +58,7 @@ asm void OS_SetExceptionVectorLower (void)
 
 void OS_InitException (void)
 {
+    #ifdef SDK_BUILD_ARM
     if (0x2600000 <= *(u32 *)HW_EXCP_VECTOR_BUF_FOR_DEBUGGER
         && *(u32 *)HW_EXCP_VECTOR_BUF_FOR_DEBUGGER < 0x2800000) {
         OSi_DebuggerHandler = *(void **)HW_EXCP_VECTOR_BUF_FOR_DEBUGGER;
@@ -71,6 +72,10 @@ void OS_InitException (void)
     }
 
     OSi_UserExceptionHandler = NULL;
+    #else
+    OSi_DebuggerHandler = NULL;
+    OSi_UserExceptionHandler = NULL;
+    #endif
 }
 
 #if defined(SDK_ARM9)

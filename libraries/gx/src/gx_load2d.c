@@ -149,7 +149,11 @@ void GXS_LoadBG0Scr (const void *pSrc, u32 offset, u32 szByte)
 	SDK_ALIGN2_ASSERT(offset);
 	SDK_ALIGN2_ASSERT(szByte);
 
+	#ifdef SDK_PORT
+	ptr = (u64)G2S_GetBG0ScrPtr();
+	#else
 	ptr = (u32)G2S_GetBG0ScrPtr();
+	#endif
 
 	GX_RegionCheck_SubBG(ptr + offset, ptr + offset + szByte);
 	GXi_DmaCopy16(GXi_DmaId, pSrc, (void *)(ptr + offset), szByte);
