@@ -19,6 +19,7 @@ static bool s_showWindowG2 = 0;
 static bool s_showWindowNet = 0;
 static bool s_showWindowPad = 0;
 static bool s_showWindowPrjSpecific = 0;
+static bool s_showWindowImguiDemo = 0;
 static bool s_pauseGameLogic = 0;
 static ImVec2 s_btnSize = {75, 20};
 
@@ -83,6 +84,14 @@ void SIM_GUI_Main(void)
                 s_showWindowNet = 1;
             }
         }
+    
+        if(igButton("Imgui Demo", s_btnSize)) {
+            if(s_showWindowImguiDemo){
+                s_showWindowImguiDemo = 0;
+            } else {
+                s_showWindowImguiDemo = 1;
+            }
+        }
 
         if(igButton("Pause Game Logic", s_btnSize)) {
             if(s_pauseGameLogic){
@@ -114,6 +123,10 @@ void SIM_GUI_Main(void)
 
         if(s_showWindowNet){
             GUI_AppNetMain(&s_showWindowNet);
+        }
+
+        if(s_showWindowImguiDemo){
+            igShowDemoWindow(&s_showWindowImguiDemo);
         }
 
         if(s_showWindowPrjSpecific){

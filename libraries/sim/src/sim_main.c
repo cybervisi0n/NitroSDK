@@ -324,7 +324,7 @@ static void DrawScreenQuad()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(G3SIM_Vertex_t), (void*)offsetof(G3SIM_Vertex_t, x));
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(G3SIM_Vertex_t), (void*)offsetof(G3SIM_Vertex_t, s));
-    
+
     glDrawArrays(GL_TRIANGLES,0,arrayCount);
 }
 
@@ -338,7 +338,7 @@ SIM_config_type * SIM_GetConfigPtr()
 
 static u64 map(u64 x, u64 in_min, u64 in_max, u64 out_min, u64 out_max)
 {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 void SIM_u16ToRGB( u16 in, u8 * r, u8 *g, u8 * b )
@@ -354,7 +354,7 @@ void SIM_u16ToRGB( u16 in, u8 * r, u8 *g, u8 * b )
 static draw_command_type_t DecodeG3Op(u32 op)
 {
     switch( op )
-        {
+    {
         case G3OP_NOP:
             return DRAW_CMD_G3_NOP;
         case G3OP_MTX_MODE:
@@ -435,7 +435,7 @@ static draw_command_type_t DecodeG3Op(u32 op)
             return DRAW_CMD_G3_DUMMY;
         default:
             return DRAW_CMD_CNT;
-        }
+    }
 }
 
 static void ConvertMsgParams(draw_msg_t * msg)
@@ -551,7 +551,7 @@ static void ConvertMsgParams(draw_msg_t * msg)
             msg->data.mtx44._31 = (s32)tmpMsg.data.numsS64[14];
             msg->data.mtx44._32 = (s32)tmpMsg.data.numsS64[15];
             msg->data.mtx44._33 = (s32)tmpMsg.data.numsS64[16];
-            break;	
+            break;
         default:
             break;
     }
@@ -714,7 +714,7 @@ void SIM_HandleG3Command(draw_msg_t * msg)
 {
     u32 temp;
     switch( msg->type )
-        {
+    {
         case DRAW_CMD_G3_NOP:
         case DRAW_CMD_G3_DUMMY:
             break;
@@ -764,7 +764,7 @@ void SIM_HandleG3Command(draw_msg_t * msg)
             G3SIM_Color(msg->data.numU16);
             break;
         case DRAW_CMD_G3_TEXIMAGEPARAM:
-            
+
             G3SIM_FlushArray();
             G3SIM_TexImageParam(msg->data.numU32);
             break;
@@ -791,7 +791,7 @@ void SIM_HandleG3Command(draw_msg_t * msg)
             s16 x = (s16)((temp & 0x000003FF) << 6) >> 6;
             s16 y = (s16)((temp & 0x000FFC00) >> 4) >> 6;
             s16 z = (s16)((temp & 0x3FF00000) >> 14) >> 6;
-            
+
             msg->data.xyz.x = prevXYZ.x + x;
             msg->data.xyz.y = prevXYZ.y + y;
             msg->data.xyz.z = prevXYZ.z + z;
@@ -813,128 +813,128 @@ void SIM_HandleG3Command(draw_msg_t * msg)
             G3SIM_Vtx(msg->data.xyz.x, msg->data.xyz.y, msg->data.xyz.z);
             if( s_G3numInPoly == 0 || s_G3drawPoly == 1)
             {
-                    s_G3drawPoly = 0;
-                    GLfloat myVerts[(3*6) + (2*6)];
-                    if( s_primType == GX_BEGIN_TRIANGLES || s_primType == GX_BEGIN_TRIANGLE_STRIP )
+                s_G3drawPoly = 0;
+                GLfloat myVerts[(3*6) + (2*6)];
+                if( s_primType == GX_BEGIN_TRIANGLES || s_primType == GX_BEGIN_TRIANGLE_STRIP )
+                {
+                    if( s_primType == GX_BEGIN_TRIANGLE_STRIP && !(s_G3triStripTriNum & 1) )
                     {
-                        if( s_primType == GX_BEGIN_TRIANGLE_STRIP && !(s_G3triStripTriNum & 1) )
-                        {
-                            //Swap the last 2 verts
-                            G3SIM_FxVtx_t temp;
-                            memcpy(&temp, &s_g3PolygonVerts[1], sizeof(G3SIM_FxVtx_t));
-                            memcpy(&s_g3PolygonVerts[1], &s_g3PolygonVerts[2], sizeof(G3SIM_FxVtx_t));
-                            memcpy(&s_g3PolygonVerts[2], &temp, sizeof(G3SIM_FxVtx_t));
-                        }
-                        
-                        G3SIM_SubmitPolygon(s_g3PolygonVerts, 3);
-                        
-                        if( s_primType == GX_BEGIN_TRIANGLE_STRIP && !(s_G3triStripTriNum & 1) )
-                        {
-                            //Swap the last 2 verts
-                            G3SIM_FxVtx_t temp;
-                        
-                            memcpy(&temp, &s_g3PolygonVerts[1], sizeof(G3SIM_FxVtx_t));
-                            memcpy(&s_g3PolygonVerts[1], &s_g3PolygonVerts[2], sizeof(G3SIM_FxVtx_t));
-                            memcpy(&s_g3PolygonVerts[2], &temp, sizeof(G3SIM_FxVtx_t));
-                        }
-                        
-                        if( s_primType == GX_BEGIN_TRIANGLE_STRIP )
-                        {
-                            //Copy the last two verts from the last polygon
-                            memcpy(&s_g3PolygonVerts[0], &s_g3PolygonVerts[1], sizeof(G3SIM_FxVtx_t));
-                            memcpy(&s_g3PolygonVerts[1], &s_g3PolygonVerts[2], sizeof(G3SIM_FxVtx_t));
-                        }
-
-                        s_numG3DrawsThisFrame++;
+                        //Swap the last 2 verts
+                        G3SIM_FxVtx_t temp;
+                        memcpy(&temp, &s_g3PolygonVerts[1], sizeof(G3SIM_FxVtx_t));
+                        memcpy(&s_g3PolygonVerts[1], &s_g3PolygonVerts[2], sizeof(G3SIM_FxVtx_t));
+                        memcpy(&s_g3PolygonVerts[2], &temp, sizeof(G3SIM_FxVtx_t));
                     }
-                    if( s_primType == GX_BEGIN_QUADS || s_primType == GX_BEGIN_QUAD_STRIP )
+
+                    G3SIM_SubmitPolygon(s_g3PolygonVerts, 3);
+
+                    if( s_primType == GX_BEGIN_TRIANGLE_STRIP && !(s_G3triStripTriNum & 1) )
                     {
-                        if( s_primType == GX_BEGIN_QUAD_STRIP )
-                        {
-                            G3SIM_FxVtx_t temp;
-                            memcpy(&temp, &s_g3PolygonVerts[2], sizeof(G3SIM_FxVtx_t));
-                            memcpy(&s_g3PolygonVerts[2], &s_g3PolygonVerts[3], sizeof(G3SIM_FxVtx_t));
-                            memcpy(&s_g3PolygonVerts[3], &temp, sizeof(G3SIM_FxVtx_t));
-                        }
+                        //Swap the last 2 verts
+                        G3SIM_FxVtx_t temp;
 
-                        G3SIM_SubmitPolygon(s_g3PolygonVerts, 4);
-
-                        s_numG3DrawsThisFrame++;
-
-                        if( s_primType == GX_BEGIN_QUAD_STRIP )
-                        {
-                            //Copy the last two verts from the last polygon
-                            s_g3PolygonVerts[0].x = s_g3PolygonVerts[3].x;
-                            s_g3PolygonVerts[0].y = s_g3PolygonVerts[3].y;
-                            s_g3PolygonVerts[0].z = s_g3PolygonVerts[3].z;
-                            s_g3PolygonVerts[0].w = s_g3PolygonVerts[3].w;
-
-                            s_g3PolygonVerts[1].x = s_g3PolygonVerts[2].x;
-                            s_g3PolygonVerts[1].y = s_g3PolygonVerts[2].y;
-                            s_g3PolygonVerts[1].z = s_g3PolygonVerts[2].z;
-                            s_g3PolygonVerts[1].w = s_g3PolygonVerts[2].w;
-
-                            memcpy(&s_g3PolygonVerts[0], &s_g3PolygonVerts[3], sizeof(G3SIM_FxVtx_t));
-                            memcpy(&s_g3PolygonVerts[1], &s_g3PolygonVerts[2], sizeof(G3SIM_FxVtx_t));
-                        }
+                        memcpy(&temp, &s_g3PolygonVerts[1], sizeof(G3SIM_FxVtx_t));
+                        memcpy(&s_g3PolygonVerts[1], &s_g3PolygonVerts[2], sizeof(G3SIM_FxVtx_t));
+                        memcpy(&s_g3PolygonVerts[2], &temp, sizeof(G3SIM_FxVtx_t));
                     }
-                    
+
+                    if( s_primType == GX_BEGIN_TRIANGLE_STRIP )
+                    {
+                        //Copy the last two verts from the last polygon
+                        memcpy(&s_g3PolygonVerts[0], &s_g3PolygonVerts[1], sizeof(G3SIM_FxVtx_t));
+                        memcpy(&s_g3PolygonVerts[1], &s_g3PolygonVerts[2], sizeof(G3SIM_FxVtx_t));
+                    }
+
+                    s_numG3DrawsThisFrame++;
+                }
+                if( s_primType == GX_BEGIN_QUADS || s_primType == GX_BEGIN_QUAD_STRIP )
+                {
+                    if( s_primType == GX_BEGIN_QUAD_STRIP )
+                    {
+                        G3SIM_FxVtx_t temp;
+                        memcpy(&temp, &s_g3PolygonVerts[2], sizeof(G3SIM_FxVtx_t));
+                        memcpy(&s_g3PolygonVerts[2], &s_g3PolygonVerts[3], sizeof(G3SIM_FxVtx_t));
+                        memcpy(&s_g3PolygonVerts[3], &temp, sizeof(G3SIM_FxVtx_t));
+                    }
+
+                    G3SIM_SubmitPolygon(s_g3PolygonVerts, 4);
+
+                    s_numG3DrawsThisFrame++;
+
+                    if( s_primType == GX_BEGIN_QUAD_STRIP )
+                    {
+                        //Copy the last two verts from the last polygon
+                        s_g3PolygonVerts[0].x = s_g3PolygonVerts[3].x;
+                        s_g3PolygonVerts[0].y = s_g3PolygonVerts[3].y;
+                        s_g3PolygonVerts[0].z = s_g3PolygonVerts[3].z;
+                        s_g3PolygonVerts[0].w = s_g3PolygonVerts[3].w;
+
+                        s_g3PolygonVerts[1].x = s_g3PolygonVerts[2].x;
+                        s_g3PolygonVerts[1].y = s_g3PolygonVerts[2].y;
+                        s_g3PolygonVerts[1].z = s_g3PolygonVerts[2].z;
+                        s_g3PolygonVerts[1].w = s_g3PolygonVerts[2].w;
+
+                        memcpy(&s_g3PolygonVerts[0], &s_g3PolygonVerts[3], sizeof(G3SIM_FxVtx_t));
+                        memcpy(&s_g3PolygonVerts[1], &s_g3PolygonVerts[2], sizeof(G3SIM_FxVtx_t));
+                    }
+                }
+
             }
             break;
-        case DRAW_CMD_G3_LIGHTCOLOR:
-            G3SIM_LightColor(msg->data.numU32);
-            break;
-        case DRAW_CMD_G3_LIGHTVECTOR:
-            G3SIM_LightVector(msg->data.numU32);
-            break;
-        case DRAW_CMD_G3_NORMAL:
-            G3SIM_Normal(msg->data.numU32);
-            break;
-        case DRAW_CMD_G3_TEXCOORD:
-            G3SIM_TexCoord(msg->data.numU32);
-            break;
-        case DRAW_CMD_G3_POLYGONATTR:
-            G3SIM_PolygonAttr(msg->data.numU32);
-            break;
-        case DRAW_CMD_G3_DIFF_AMB:
-            G3SIM_DiffAmb(msg->data.numU32);
-            break;
-        case DRAW_CMD_G3_SPEC_EMI:
-            G3SIM_SpecEmi(msg->data.numU32);
-            break;
-        case DRAW_CMD_G3_DIRECT0:
-            msg->type = DecodeG3Op(msg->data.numU32);
-            SIM_HandleG3Command( msg );
-            break;
-        case DRAW_CMD_G3_DIRECT1:
-            msg->type = DecodeG3Op(msg->data.numsU64[0]);
-            //Get the parameter in the right place
-            ConvertMsgParams( msg );
-            SIM_HandleG3Command( msg );
-            break;
-        case DRAW_CMD_G3_SWAPBUFFERS:
+            case DRAW_CMD_G3_LIGHTCOLOR:
+                G3SIM_LightColor(msg->data.numU32);
+                break;
+            case DRAW_CMD_G3_LIGHTVECTOR:
+                G3SIM_LightVector(msg->data.numU32);
+                break;
+            case DRAW_CMD_G3_NORMAL:
+                G3SIM_Normal(msg->data.numU32);
+                break;
+            case DRAW_CMD_G3_TEXCOORD:
+                G3SIM_TexCoord(msg->data.numU32);
+                break;
+            case DRAW_CMD_G3_POLYGONATTR:
+                G3SIM_PolygonAttr(msg->data.numU32);
+                break;
+            case DRAW_CMD_G3_DIFF_AMB:
+                G3SIM_DiffAmb(msg->data.numU32);
+                break;
+            case DRAW_CMD_G3_SPEC_EMI:
+                G3SIM_SpecEmi(msg->data.numU32);
+                break;
+            case DRAW_CMD_G3_DIRECT0:
+                msg->type = DecodeG3Op(msg->data.numU32);
+                SIM_HandleG3Command( msg );
+                break;
+            case DRAW_CMD_G3_DIRECT1:
+                msg->type = DecodeG3Op(msg->data.numsU64[0]);
+                //Get the parameter in the right place
+                ConvertMsgParams( msg );
+                SIM_HandleG3Command( msg );
+                break;
+            case DRAW_CMD_G3_SWAPBUFFERS:
             {
                 u8 depthBufferMode = (msg->data.numU32 & 2) >> 1;
                 G3SIM_SwapBuffers(depthBufferMode); //TODO: add flush attributes here for Z/W-buffering!
             }
             break;
-        case DRAW_CMD_G3_VIEWPORT:
-            //TODO
-            break;
-        case DRAW_CMD_G3_TEXPLTTBASE:
-            G3SIM_FlushArray();
-            G3SIM_TexPlttBase(msg->data.numU32);
-            break;
-        case DRAW_CMD_G3_BOXTEST:
-            G3SIM_BoxTest(msg->data.boxtest.x,
-                          msg->data.boxtest.y,
-                          msg->data.boxtest.z,
-                          msg->data.boxtest.width,
-                          msg->data.boxtest.height,
-                          msg->data.boxtest.depth);
-            break;
-        case DRAW_CMD_G3_CMD_LIST:
-            //Process a command List
+            case DRAW_CMD_G3_VIEWPORT:
+                //TODO
+                break;
+            case DRAW_CMD_G3_TEXPLTTBASE:
+                G3SIM_FlushArray();
+                G3SIM_TexPlttBase(msg->data.numU32);
+                break;
+            case DRAW_CMD_G3_BOXTEST:
+                G3SIM_BoxTest(msg->data.boxtest.x,
+                              msg->data.boxtest.y,
+                              msg->data.boxtest.z,
+                              msg->data.boxtest.width,
+                              msg->data.boxtest.height,
+                              msg->data.boxtest.depth);
+                break;
+            case DRAW_CMD_G3_CMD_LIST:
+                //Process a command List
             {
                 G3SIM_CommandBlock_t * cmdBlockPtr;
                 draw_msg_t tempMsg;
@@ -1006,7 +1006,7 @@ void SIM_HandleG3Command(draw_msg_t * msg)
                             paramPtr += paramSize;
                             curOffset += paramSize;
                         }
-                        
+
                         ConvertMsgParams( &tempMsg );
                         SIM_HandleG3Command(&tempMsg);
                     }
@@ -1016,9 +1016,9 @@ void SIM_HandleG3Command(draw_msg_t * msg)
             free(msg->data.ptr);
             //TODO
             break;
-        default:
-            //printf( "Draw command %d not implemented\n", msg->type );
-        }
+                                default:
+                                    //printf( "Draw command %d not implemented\n", msg->type );
+    }
 }
 
 
@@ -1036,9 +1036,9 @@ MessageCallback( GLenum source,
                  const GLchar* message,
                  const void* userParam )
 {
-  //fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-  //         ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-  //          type, severity, message );
+    //fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+    //         ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+    //          type, severity, message );
 }
 
 void * SIM_RenderInit(void * arg){
@@ -1115,7 +1115,7 @@ void * SIM_RenderInit(void * arg){
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, SIM_NDS_SCREEN_WIDTH, SIM_NDS_SCREEN_HEIGHT*2, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+                     GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     }
 
     glGenTextures(5, s_objTextureId);
@@ -1131,20 +1131,20 @@ void * SIM_RenderInit(void * arg){
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, SIM_NDS_SCREEN_WIDTH, SIM_NDS_SCREEN_HEIGHT*2, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+                     GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     }
 
-#define GenerateTexture(_id,_width,_height) \
-  glGenTextures(1, &_id); \
-  glActiveTexture(GL_TEXTURE0); \
-  glBindTexture(GL_TEXTURE_2D, _id); \
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); \
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); \
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); \
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); \
+    #define GenerateTexture(_id,_width,_height) \
+    glGenTextures(1, &_id); \
+    glActiveTexture(GL_TEXTURE0); \
+    glBindTexture(GL_TEXTURE_2D, _id); \
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); \
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); \
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); \
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); \
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
-#define CompileShaderCommon(_id,_source) \
+    #define CompileShaderCommon(_id,_source) \
     glShaderSource( _id, 1, &_source, NULL ); \
     glCompileShader( _id ); \
     glGetShaderiv(_id, GL_COMPILE_STATUS, &status); \
@@ -1157,15 +1157,15 @@ void * SIM_RenderInit(void * arg){
         free( errorBuf ); \
     }
 
-#define CompileVertexShader(_id,_source) \
+    #define CompileVertexShader(_id,_source) \
     _id = glCreateShader(GL_VERTEX_SHADER); \
     CompileShaderCommon(_id,_source);
 
-#define CompileFragmentShader(_id,_source) \
+    #define CompileFragmentShader(_id,_source) \
     _id = glCreateShader(GL_FRAGMENT_SHADER); \
     CompileShaderCommon(_id,_source);
-    
-#define LinkShader(_id,_vertex,_fragment) \
+
+    #define LinkShader(_id,_vertex,_fragment) \
     glAttachShader( _id, _vertex ); \
     glAttachShader( _id, _fragment ); \
     glLinkProgram( _id ); \
@@ -1182,8 +1182,8 @@ void * SIM_RenderInit(void * arg){
     } \
     glValidateProgram(_id); \
     glUseProgram(_id);
-    
-    
+
+
     GenerateTexture(dummyScreenTextureId, SIM_NDS_SCREEN_WIDTH, SIM_NDS_SCREEN_HEIGHT*2);
     GenerateTexture(objWindowTextureId, SIM_NDS_SCREEN_WIDTH, SIM_NDS_SCREEN_HEIGHT*2);
     GenerateTexture(g3TextureId1024, 1024, 1024);
@@ -1246,7 +1246,7 @@ void * SIM_RenderInit(void * arg){
     CompileVertexShader(myVertexShader, G3SIM_VertexShader);
     CompileFragmentShader(myFragmentShader, G3SIM_FragmentShader);
     LinkShader(g3shaderProgramID, myVertexShader, myFragmentShader);
-    
+
     //Setup G2 Shader Program
     g2shaderProgramID = glCreateProgram();
     CompileVertexShader(g2VertexShader, G2SIM_VertexShader);
@@ -1271,7 +1271,7 @@ void * SIM_RenderInit(void * arg){
     SDL_GL_SwapWindow(window);
 
     //Setup ImGui TODO bring in imgui
-    //SIM_GUI_Init(window, context);
+    SIM_GUI_Init(window, context);
 
     clock_gettime(CLOCK_MONOTONIC, &s_SIM_lastFrameEnd);
 }
@@ -1285,7 +1285,7 @@ static void DrawEngine(BOOL isSub) {
     u8 bgMode;
     GLuint bgOrder[4];
     GLuint bgPriorities[4];
-    
+
     u32 dispSel = s_reg_GX_POWCNT >> 15;
 
     //Get the enabled BGs
@@ -1316,7 +1316,7 @@ static void DrawEngine(BOOL isSub) {
 
     glUniform1fv(glGetUniformLocation(g2shaderProgramID, "backdropColor"), 4, backdropVec);
 
-    glProgramUniform4f(g2shaderProgramID, glGetUniformLocation(g2shaderProgramID, "backdropColor"), 
+    glProgramUniform4f(g2shaderProgramID, glGetUniformLocation(g2shaderProgramID, "backdropColor"),
                        (float)backdropR / 255.0f, (float)backdropG / 255.0f, (float)backdropB / 255.0f, 1.0f);
 
     //Get the BG priorities
@@ -1347,12 +1347,12 @@ static void DrawEngine(BOOL isSub) {
         {
             if(bgPriorities[j] == 0xFF)
             {
-            continue;
+                continue;
             }
             if(bgPriorities[j] >= maxPriority)
             {
-            maxPriorityBG = j;
-            maxPriority = bgPriorities[j];
+                maxPriorityBG = j;
+                maxPriority = bgPriorities[j];
             }
         }
         bgOrder[i] = maxPriorityBG;
@@ -1647,43 +1647,43 @@ void * SIM_Render(void *arg){
     G3SIM_DrawItems();
 
     do {
-    //SIM_Net_Process();
-    if((*((u32*)HW_VBLANK_COUNT_BUF) % 10) == 0) {
-        SIM_Net_SendBeaconIndication();
-    }
+        //SIM_Net_Process();
+        if((*((u32*)HW_VBLANK_COUNT_BUF) % 10) == 0) {
+            SIM_Net_SendBeaconIndication();
+        }
 
 
-    //Unbind 3D Framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    glUseProgram(g2shaderProgramID);
+        //Unbind 3D Framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        glUseProgram(g2shaderProgramID);
 
-    glDisable( GL_DEPTH_TEST );
-    glDisable( GL_CULL_FACE );
+        glDisable( GL_DEPTH_TEST );
+        glDisable( GL_CULL_FACE );
 
-    int windowHeight;
-    int windowWidth;
-    int viewHeight;
-    int viewWidth;
-    int viewX = 0;
-    int viewY = 0;
-    float aspectRatio;
+        int windowHeight;
+        int windowWidth;
+        int viewHeight;
+        int viewWidth;
+        int viewX = 0;
+        int viewY = 0;
+        float aspectRatio;
 
-    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+        SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
-    // Scale the viewport to the correct aspect ratio and center it
-    switch(s_SIM_config.screenLayout){
-        default:
-        case SIM_CONFIG_SCREEN_LAYOUT_VERTICAL:
-            aspectRatio = 256.0f / 384.0f;
-            break;
-        case SIM_CONFIG_SCREEN_LAYOUT_HORIZONTAL:
-            aspectRatio = 512.0f / 192.0f;
-            break;
-        case SIM_CONFIG_SCREEN_LAYOUT_LARGE:
-            aspectRatio = 768.0f / 384.0f;
-            break;
-    }
+        // Scale the viewport to the correct aspect ratio and center it
+        switch(s_SIM_config.screenLayout){
+            default:
+            case SIM_CONFIG_SCREEN_LAYOUT_VERTICAL:
+                aspectRatio = 256.0f / 384.0f;
+                break;
+            case SIM_CONFIG_SCREEN_LAYOUT_HORIZONTAL:
+                aspectRatio = 512.0f / 192.0f;
+                break;
+            case SIM_CONFIG_SCREEN_LAYOUT_LARGE:
+                aspectRatio = 768.0f / 384.0f;
+                break;
+        }
 
         viewWidth = windowWidth;
         viewHeight = (int)((float)windowWidth / aspectRatio);
@@ -1696,64 +1696,63 @@ void * SIM_Render(void *arg){
             viewY = 0;
         }
 
-    glViewport(viewX, viewY, viewWidth, viewHeight);
+        glViewport(viewX, viewY, viewWidth, viewHeight);
 
-    //Set up the bounding box of the touch panel
-    if(s_SIM_config.swapScreens) {
-        switch(s_SIM_config.screenLayout){
-            default:
-            case SIM_CONFIG_SCREEN_LAYOUT_VERTICAL:
-                s_TouchPanelCoords[0] = viewX;
-                s_TouchPanelCoords[1] = viewY;
-                s_TouchPanelCoords[2] = viewX + viewWidth;
-                s_TouchPanelCoords[3] = viewY + (viewHeight / 2);
-                break;
-            case SIM_CONFIG_SCREEN_LAYOUT_HORIZONTAL:
-                s_TouchPanelCoords[0] = viewX;
-                s_TouchPanelCoords[1] = viewY;
-                s_TouchPanelCoords[2] = viewX + (viewWidth / 2);
-                s_TouchPanelCoords[3] = viewY + viewHeight;
-                break;
-            case SIM_CONFIG_SCREEN_LAYOUT_LARGE:
-                s_TouchPanelCoords[0] = viewX;
-                s_TouchPanelCoords[1] = viewY;
-                s_TouchPanelCoords[2] = viewX + ((viewWidth / 3) * 2);
-                s_TouchPanelCoords[3] = viewY + viewHeight;
-                break;
+        //Set up the bounding box of the touch panel
+        if(s_SIM_config.swapScreens) {
+            switch(s_SIM_config.screenLayout){
+                default:
+                case SIM_CONFIG_SCREEN_LAYOUT_VERTICAL:
+                    s_TouchPanelCoords[0] = viewX;
+                    s_TouchPanelCoords[1] = viewY;
+                    s_TouchPanelCoords[2] = viewX + viewWidth;
+                    s_TouchPanelCoords[3] = viewY + (viewHeight / 2);
+                    break;
+                case SIM_CONFIG_SCREEN_LAYOUT_HORIZONTAL:
+                    s_TouchPanelCoords[0] = viewX;
+                    s_TouchPanelCoords[1] = viewY;
+                    s_TouchPanelCoords[2] = viewX + (viewWidth / 2);
+                    s_TouchPanelCoords[3] = viewY + viewHeight;
+                    break;
+                case SIM_CONFIG_SCREEN_LAYOUT_LARGE:
+                    s_TouchPanelCoords[0] = viewX;
+                    s_TouchPanelCoords[1] = viewY;
+                    s_TouchPanelCoords[2] = viewX + ((viewWidth / 3) * 2);
+                    s_TouchPanelCoords[3] = viewY + viewHeight;
+                    break;
+            }
+        } else {
+            switch(s_SIM_config.screenLayout){
+                default:
+                case SIM_CONFIG_SCREEN_LAYOUT_VERTICAL:
+                    s_TouchPanelCoords[0] = viewX;
+                    s_TouchPanelCoords[1] = viewY + (viewHeight / 2);
+                    s_TouchPanelCoords[2] = viewX + viewWidth;
+                    s_TouchPanelCoords[3] = viewY + viewHeight;
+                    break;
+                case SIM_CONFIG_SCREEN_LAYOUT_HORIZONTAL:
+                    s_TouchPanelCoords[0] = viewX + (viewWidth / 2);
+                    s_TouchPanelCoords[1] = viewY;
+                    s_TouchPanelCoords[2] = viewX + viewWidth;
+                    s_TouchPanelCoords[3] = viewY + viewHeight;
+                    break;
+                case SIM_CONFIG_SCREEN_LAYOUT_LARGE:
+                    s_TouchPanelCoords[0] = viewX + ((viewWidth / 3) * 2);
+                    s_TouchPanelCoords[1] = viewY + (viewHeight / 2);
+                    s_TouchPanelCoords[2] = viewX + viewWidth;
+                    s_TouchPanelCoords[3] = viewY + viewHeight;
+                    break;
+            }
         }
-    } else {
-        switch(s_SIM_config.screenLayout){
-            default:
-            case SIM_CONFIG_SCREEN_LAYOUT_VERTICAL:
-                s_TouchPanelCoords[0] = viewX;
-                s_TouchPanelCoords[1] = viewY + (viewHeight / 2);
-                s_TouchPanelCoords[2] = viewX + viewWidth;
-                s_TouchPanelCoords[3] = viewY + viewHeight;
-                break;
-            case SIM_CONFIG_SCREEN_LAYOUT_HORIZONTAL:
-                s_TouchPanelCoords[0] = viewX + (viewWidth / 2);
-                s_TouchPanelCoords[1] = viewY;
-                s_TouchPanelCoords[2] = viewX + viewWidth;
-                s_TouchPanelCoords[3] = viewY + viewHeight;
-                break;
-            case SIM_CONFIG_SCREEN_LAYOUT_LARGE:
-                s_TouchPanelCoords[0] = viewX + ((viewWidth / 3) * 2);
-                s_TouchPanelCoords[1] = viewY + (viewHeight / 2);
-                s_TouchPanelCoords[2] = viewX + viewWidth;
-                s_TouchPanelCoords[3] = viewY + viewHeight;
-                break;
-        }
-    }
 
-    // Check Joysticks
-    if(s_SIM_SDLJoystick == NULL && SDL_NumJoysticks() >= 1) {
-        s_SIM_SDLJoystick = SDL_JoystickOpen(0);
-    }
-        
+        // Check Joysticks
+        if(s_SIM_SDLJoystick == NULL && SDL_NumJoysticks() >= 1) {
+            s_SIM_SDLJoystick = SDL_JoystickOpen(0);
+        }
+
         while( SDL_PollEvent(&Event))
         {
-            //TODO: Bring in imgui
-            //SIM_GUI_ProcessEvent(&Event);
+            SIM_GUI_ProcessEvent(&Event);
             if(Event.type == SDL_WINDOWEVENT)
             {
                 switch(Event.window.event) {
@@ -1802,8 +1801,8 @@ void * SIM_Render(void *arg){
                     //Select button
                     s_reg_PAD_KEYINPUT = s_reg_PAD_KEYINPUT & 0b1111111111111011;
                 } else if(keyRead == s_SIM_config.padSettings.guiKey) {
-                    //Toggle Debug GUI //TODO: bring in imgui
-                    //SIM_GUI_Toggle();
+                    //Toggle Debug GUI
+                    SIM_GUI_Toggle();
                 }
             }
             if(Event.type == SDL_KEYUP)
@@ -1885,7 +1884,7 @@ void * SIM_Render(void *arg){
             }
             if( Event.type == SDL_JOYAXISMOTION ) {
                 if(Event.jaxis.value > s_SIM_config.padSettings.joyAxisDeadzone
-                || Event.jaxis.value < (s_SIM_config.padSettings.joyAxisDeadzone*-1)) {
+                    || Event.jaxis.value < (s_SIM_config.padSettings.joyAxisDeadzone*-1)) {
                     if(Event.jaxis.value > 0) {
                         HandleJoystickKeyDown(Event.jaxis.axis | SIM_CONFIG_JOY_AXIS_PLUS_MASK);
                         HandleJoystickKeyUp(Event.jaxis.axis | SIM_CONFIG_JOY_AXIS_MINUS_MASK);
@@ -1893,10 +1892,10 @@ void * SIM_Render(void *arg){
                         HandleJoystickKeyDown(Event.jaxis.axis | SIM_CONFIG_JOY_AXIS_MINUS_MASK);
                         HandleJoystickKeyUp(Event.jaxis.axis | SIM_CONFIG_JOY_AXIS_PLUS_MASK);
                     }
-                } else {
-                    HandleJoystickKeyUp(Event.jaxis.axis | SIM_CONFIG_JOY_AXIS_PLUS_MASK);
-                    HandleJoystickKeyUp(Event.jaxis.axis | SIM_CONFIG_JOY_AXIS_MINUS_MASK);
-                }
+                    } else {
+                        HandleJoystickKeyUp(Event.jaxis.axis | SIM_CONFIG_JOY_AXIS_PLUS_MASK);
+                        HandleJoystickKeyUp(Event.jaxis.axis | SIM_CONFIG_JOY_AXIS_MINUS_MASK);
+                    }
             }
             if( Event.type == SDL_MOUSEBUTTONDOWN )
             {
@@ -1938,9 +1937,8 @@ void * SIM_Render(void *arg){
             s_tpData.touch = 0;
         }
 
-        //TODO: bring in imgui
-        //SIM_GUI_NewFrame();
-        //SIM_GUI_Main();
+        SIM_GUI_NewFrame();
+        SIM_GUI_Main();
 
         memset( bgtex, 0, sizeof(u8) * 4 * SIM_NDS_SCREEN_WIDTH * SIM_NDS_SCREEN_HEIGHT * 2 );
         memset( bg0tex, 0, sizeof(u8) * 4 * SIM_NDS_SCREEN_WIDTH * SIM_NDS_SCREEN_HEIGHT * 2 );
@@ -1967,8 +1965,7 @@ void * SIM_Render(void *arg){
         s_HW_INTR_CHECK_BUF |= 1;
         *((u32*)HW_VBLANK_COUNT_BUF) = *((u32*)HW_VBLANK_COUNT_BUF) + 1;
 
-        //TODO: bring in imgui
-        //SIM_GUI_Render();
+        SIM_GUI_Render();
 
         // Calculate frametime
         struct timespec curTime;
@@ -2005,30 +2002,30 @@ void * SIM_Render(void *arg){
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
 
-    } while(/*SIM_GUI_IsGameLogicPaused()*/ FALSE /* TODO: bring in IMGUI*/);
-        //Bind 3D Framebuffer & Renderbuffer
-        glBindFramebuffer(GL_FRAMEBUFFER, g3FrameBuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, g3RenderBufferId);
+    } while(SIM_GUI_IsGameLogicPaused());
+    //Bind 3D Framebuffer & Renderbuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, g3FrameBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, g3RenderBufferId);
 
-        //Setup 3D Viewport
-        if( s_reg_GX_POWCNT >> 15 )
-        {
-            glViewport(0, SIM_NDS_SCREEN_HEIGHT*s_SIM_config.internalResolutionScale, SIM_NDS_SCREEN_WIDTH*s_SIM_config.internalResolutionScale, SIM_NDS_SCREEN_HEIGHT*s_SIM_config.internalResolutionScale);
-        }
-        else
-        {
-            glViewport(0, 0, SIM_NDS_SCREEN_WIDTH*s_SIM_config.internalResolutionScale, SIM_NDS_SCREEN_HEIGHT*s_SIM_config.internalResolutionScale);
-        }
-    
+    //Setup 3D Viewport
+    if( s_reg_GX_POWCNT >> 15 )
+    {
+        glViewport(0, SIM_NDS_SCREEN_HEIGHT*s_SIM_config.internalResolutionScale, SIM_NDS_SCREEN_WIDTH*s_SIM_config.internalResolutionScale, SIM_NDS_SCREEN_HEIGHT*s_SIM_config.internalResolutionScale);
+    }
+    else
+    {
+        glViewport(0, 0, SIM_NDS_SCREEN_WIDTH*s_SIM_config.internalResolutionScale, SIM_NDS_SCREEN_HEIGHT*s_SIM_config.internalResolutionScale);
+    }
 
-        //Activate 3D shader
-        glUseProgram(g3shaderProgramID);
 
-        glEnable( GL_DEPTH_TEST );
-        glEnable( GL_CULL_FACE );
+    //Activate 3D shader
+    glUseProgram(g3shaderProgramID);
 
-        glCullFace(GL_FRONT);
-        glFrontFace(GL_CW);
+    glEnable( GL_DEPTH_TEST );
+    glEnable( GL_CULL_FACE );
+
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CW);
 }
 
 void SIM_PreRenderVBlank()
@@ -2164,7 +2161,7 @@ int main(int argc, char* argv[]){
     //Init Sockets (only needed on windows)
     #ifdef SDK_BUILD_WIN64
     WSADATA wsa;
-    
+
     if (WSAStartup(MAKEWORD(2,2),&wsa) != 0)
     {
         printf("Failed to initialize winsock. Error Code : %d",WSAGetLastError());

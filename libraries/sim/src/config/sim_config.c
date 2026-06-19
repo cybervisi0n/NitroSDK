@@ -294,6 +294,7 @@ static const char * ScreenLayoutTypeToString(SIM_config_screen_layout_type layou
             ret = "large";
             break;
     }
+    return ret;
 }
 
 static SIM_config_screen_layout_type StringToScreenLayoutType(const char * str)
@@ -388,7 +389,9 @@ void SIM_Config_SaveConfigFile(SIM_config_type * aConfig)
     fprintf(configFile, "InternalResolutionScale=%d\n", aConfig->internalResolutionScale);
     fprintf(configFile, "WindowHeight=%d\n", aConfig->windowHeight);
     fprintf(configFile, "WindowWidth=%d\n", aConfig->windowWidth);
-    fprintf(configFile, "ScreenLayout=%s\n", ScreenLayoutTypeToString(aConfig->screenLayout));
+
+    const char * screenLayoutString = ScreenLayoutTypeToString(aConfig->screenLayout);
+    fprintf(configFile, "ScreenLayout=%s\n", screenLayoutString);
     fprintf(configFile, "SwapScreens=%s\n", BoolToString(aConfig->swapScreens));
     fprintf(configFile, "VsyncInterval=%d\n", aConfig->vsyncInterval);
     fprintf(configFile, "CapFrameRate=%s\n", BoolToString(aConfig->capFrameRate));

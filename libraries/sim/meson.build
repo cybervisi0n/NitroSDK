@@ -1,3 +1,4 @@
+subdir('cimgui')
 subdir('src')
 
 libsim_includes = include_directories('include')
