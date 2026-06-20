@@ -53,12 +53,12 @@ void SIM_GUI_Main(void)
         igText("FrameTime %.3fms", frameTimeMs);
         igText("%.0ffps", 1000.0f / frameTimeMs);
 
-        SIM_GUI_AppButton("Config", &s_showWindowConfig, GUI_AppConfigMain);
-        SIM_GUI_AppButton("Input", &s_showWindowPad, GUI_AppPadMain);
-        SIM_GUI_AppButton("G2", &s_showWindowG2, GUI_AppG2Main);
-        SIM_GUI_AppButton("Net", &s_showWindowNet, GUI_AppNetMain);
-        SIM_GUI_AppButton("Imgui Demo", &s_showWindowImguiDemo, igShowDemoWindow);
-        SIM_GUI_AppButton("PrjSpecific", &s_showWindowPrjSpecific, SIM_GUI_Prj_main);
+        SIM_GUI_AppButton("Config", &s_showWindowConfig, NULL, GUI_AppConfigMain);
+        SIM_GUI_AppButton("Input", &s_showWindowPad, NULL, GUI_AppPadMain);
+        SIM_GUI_AppButton("G2", &s_showWindowG2, NULL, GUI_AppG2Main);
+        SIM_GUI_AppButton("Net", &s_showWindowNet, GUI_AppNetInit, GUI_AppNetMain);
+        SIM_GUI_AppButton("Imgui Demo", &s_showWindowImguiDemo, NULL, igShowDemoWindow);
+        SIM_GUI_AppButton("PrjSpecific", &s_showWindowPrjSpecific, NULL, SIM_GUI_Prj_main);
         igCheckbox("Pause Game Logic", &s_pauseGameLogic);
         igEnd();
     }
@@ -98,12 +98,15 @@ bool SIM_GUI_IsGameLogicPaused(void)
     return s_pauseGameLogic;
 }
 
-void SIM_GUI_AppButton(const char * aLabel, bool * aState, void (*aAppFunc)(bool *))
+void SIM_GUI_AppButton(const char * aLabel, bool * aState, void (*aInitFunc)(void), void (*aAppFunc)(bool *))
 {
     if(igButton(aLabel, s_btnSize)) {
         if(*aState) {
             *aState = false;
         } else {
+            if(aInitFunc){
+                aInitFunc();
+            }
             *aState = true;
         }
     }

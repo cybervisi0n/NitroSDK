@@ -18,6 +18,6 @@ void SIM_GUI_Render(void);
 void SIM_GUI_Toggle(void);
 bool SIM_GUI_IsGameLogicPaused(void);
 
-void SIM_GUI_AppButton(const char * aLabel, bool * aState, void (*aAppFunc)(bool *));
+void SIM_GUI_AppButton(const char * aLabel, bool * aState, void (*aInitFunc)(void), void (*aAppFunc)(bool *));
 
 #endif
