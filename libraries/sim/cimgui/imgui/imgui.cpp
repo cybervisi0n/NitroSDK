@@ -20829,13 +20829,17 @@ static bool Platform_OpenInShellFn_DefaultImpl(ImGuiContext*, const char* path)
         return false;
     if (!pid)
     {
+        #ifndef SDK_BUILD_NX
         execvp(args[0], const_cast<char **>(args));
+        #endif
         exit(-1);
     }
     else
     {
         int status;
+        #ifndef SDK_BUILD_NX
         waitpid(pid, &status, 0);
+        #endif
         return WEXITSTATUS(status) == 0;
     }
 }

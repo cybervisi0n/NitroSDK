@@ -1,7 +1,11 @@
 #include <nitro.h>
 #include <simulator/sim.h>
 #include <simulator/sim_net.h>
+#ifdef SDK_BUILD_NX
+#include <glad/glad.h>
+#else
 #include <simulator/glad/glad.h>
+#endif
 
 #include "gui_internal.h"
 

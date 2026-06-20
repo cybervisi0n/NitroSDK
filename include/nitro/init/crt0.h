@@ -21,6 +21,11 @@ extern "C" {
     void NitroStartUp(void);
 #endif
 
+#ifdef SDK_AARCH64
+    void NitroMain(void);
+    void NitroStartUp(void);
+#endif
+
 #ifdef __cplusplus
 }
 #endif

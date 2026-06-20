@@ -1,6 +1,10 @@
 #include <nitro.h>
 #include <simulator/sim.h>
+#ifdef SDK_BUILD_NX
+#include <glad/glad.h>
+#else
 #include <simulator/glad/glad.h>
+#endif
 
 //TODO: Move more of these in here as statics
 extern u8 bgtex[4*SIM_NDS_SCREEN_WIDTH*SIM_NDS_SCREEN_HEIGHT*2];

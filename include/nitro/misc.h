@@ -26,7 +26,7 @@ extern "C" {
     #endif
 #endif
 
-#if defined(SDK_BUILD_LINUX) || defined(SDK_BUILD_WIN64)
+#if defined(SDK_BUILD_LINUX) || defined(SDK_BUILD_WIN64) || defined(SDK_BUILD_NX)
 #define SDK_COMPILER_ASSERT(expr)
 #else
 #define SDK_COMPILER_ASSERT(expr) \

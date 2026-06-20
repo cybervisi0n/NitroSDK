@@ -13,6 +13,10 @@ extern "C" {
 #include <nitro/env/env_system.h>
 #endif
 
+#ifdef SDK_AARCH64
+#include <nitro/env/env_system.h>
+#endif
+
 #ifdef __cplusplus
 }
 #endif

@@ -2,7 +2,11 @@
 #include <simulator/sim.h>
 
 #include "simulator/gui.h"
+#ifdef SDK_BUILD_NX
+#include <glad/glad.h>
+#else
 #include "simulator/glad/glad.h"
+#endif
 
 #include "gui_internal.h"
 

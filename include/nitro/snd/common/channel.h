@@ -128,6 +128,40 @@ extern "C" {
     #define REG_SND_SOUND0CNT_VOLUME_MASK                      0x0000007f
 #endif
 
+#ifdef SDK_AARCH64
+    #define REG_SND_SOUND0CNT_E_SHIFT                          31
+    #define REG_SND_SOUND0CNT_E_SIZE                           1
+    #define REG_SND_SOUND0CNT_E_MASK                           0x80000000
+
+    #define REG_SND_SOUND0CNT_FORMAT_SHIFT                     29
+    #define REG_SND_SOUND0CNT_FORMAT_SIZE                      2
+    #define REG_SND_SOUND0CNT_FORMAT_MASK                      0x60000000
+
+    #define REG_SND_SOUND0CNT_REPEAT_SHIFT                     27
+    #define REG_SND_SOUND0CNT_REPEAT_SIZE                      2
+    #define REG_SND_SOUND0CNT_REPEAT_MASK                      0x18000000
+
+    #define REG_SND_SOUND0CNT_DUTY_SHIFT                       24
+    #define REG_SND_SOUND0CNT_DUTY_SIZE                        3
+    #define REG_SND_SOUND0CNT_DUTY_MASK                        0x07000000
+
+    #define REG_SND_SOUND0CNT_PAN_SHIFT                        16
+    #define REG_SND_SOUND0CNT_PAN_SIZE                         7
+    #define REG_SND_SOUND0CNT_PAN_MASK                         0x007f0000
+
+    #define REG_SND_SOUND0CNT_HOLD_SHIFT                       15
+    #define REG_SND_SOUND0CNT_HOLD_SIZE                        1
+    #define REG_SND_SOUND0CNT_HOLD_MASK                        0x00008000
+
+    #define REG_SND_SOUND0CNT_SHIFT_SHIFT                      8
+    #define REG_SND_SOUND0CNT_SHIFT_SIZE                       2
+    #define REG_SND_SOUND0CNT_SHIFT_MASK                       0x00000300
+
+    #define REG_SND_SOUND0CNT_VOLUME_SHIFT                     0
+    #define REG_SND_SOUND0CNT_VOLUME_SIZE                      7
+    #define REG_SND_SOUND0CNT_VOLUME_MASK                      0x0000007f
+#endif
+
 typedef enum {
 	SND_CHANNEL_0,
 	SND_CHANNEL_1,

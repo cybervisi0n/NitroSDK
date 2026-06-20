@@ -33,7 +33,7 @@ extern void SDK_STATIC_BSS_END(void);
 #define SDK_NITROCODE_BE    0xdec00621
 #define INITi_HW_DTCM       SDK_AUTOLOAD_DTCM_START
 
-#if defined( SDK_PORT ) && defined( SDK_X86 )
+#if defined( SDK_PORT )
 
 #else
 SDK_WEAK_SYMBOL asm void _start (void)

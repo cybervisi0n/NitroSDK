@@ -7,7 +7,11 @@ extern int NitroSpMain(void * arg);
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 
+#ifdef SDK_BUILD_NX
+#include <glad/glad.h>
+#else
 #include <simulator/glad/glad.h>
+#endif
 #include <simulator/sim.h>
 #include <simulator/sim_snd.h>
 #include <simulator/sim_audio.h>
@@ -63,7 +67,7 @@ static u32 s_TouchPanelCoords[4] = {}; // The bounding box of the touch screen
 #include <nitro/snd/common/work.h>
 #include <nitro/snd/common/command.h>
 
-#ifndef SDK_BUILD_LINUX
+#ifdef SDK_BUILD_WIN64
 #define NANOTIME_IMPLEMENTATION
 #include "nanotime.h"
 #endif

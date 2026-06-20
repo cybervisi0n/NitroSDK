@@ -5,9 +5,9 @@ else
     libdgt = library('dgt',
         c_pch: nitro_pch,
         include_directories: nitrosdk_includes,
-        pic: false,
+        pic: build_target == 'nx',
         sources: [libdgt_srcs],
-        native: true
+        native: (build_target == 'linux' or build_target == 'win64')
     )
 
     nitrosdk_libs += libdgt

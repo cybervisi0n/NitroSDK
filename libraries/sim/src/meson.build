@@ -10,7 +10,6 @@ libsim_srcs = files(
     'g3_draw.c',
     'g3_handler.c',
     'g3_shader.c',
-    'glad.c',
     'queue.c',
     'sim_assert.c',
     'sim_audio.c',
@@ -19,3 +18,7 @@ libsim_srcs = files(
     'sim_net.c',
     'sim_screenquads.c'
 )
+
+if(build_target == 'linux' or build_target == 'win64')
+libsim_srcs += 'glad.c'
+endif

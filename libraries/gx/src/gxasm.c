@@ -1,7 +1,7 @@
 #include <nitro/code32.h>
 #include "../include/gxasm.h"
 
-#if defined( SDK_PORT ) && defined( SDK_X86 )
+#if defined( SDK_PORT )
 void GX_SendFifo48B(const void* pSrc, void* pDest)
 {
     return;

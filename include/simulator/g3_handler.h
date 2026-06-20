@@ -3,7 +3,11 @@
 #include <nitro/hw/X86/mmap_shared.h>
 #include <nitro/fx/fx.h>
 #include <nitro/fx/fx_const.h>
+#ifdef SDK_BUILD_NX
+#include <glad/glad.h>
+#else
 #include <simulator/glad/glad.h>
+#endif
 
 #ifndef SIM_G3_HANDLER_H
 #define SIM_G3_HANDLER_H
