@@ -9,6 +9,10 @@
 #define ATTRIBUTE_ALIGN(x) __attribute__((aligned(x)))
 #endif
 
+#ifdef SDK_BUILD_NX
+#include "switch.h"
+#endif
+
 #ifdef SDK_ASM
     #include <nitro/spec.h>
     #include <nitro/types.h>

@@ -16,6 +16,11 @@
 extern "C" {
 #endif
 
+#ifdef SDK_BUILD_NX
+#include "switch.h"
+#endif
+
+#ifndef SDK_BUILD_NX
 typedef unsigned char u8;
 typedef unsigned short int u16;
 
@@ -54,6 +59,7 @@ typedef volatile s8 vs8;
 typedef volatile s16 vs16;
 typedef volatile s32 vs32;
 typedef volatile s64 vs64;
+#endif
 
 typedef float f32;
 typedef volatile f32 vf32;

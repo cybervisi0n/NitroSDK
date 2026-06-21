@@ -20,5 +20,5 @@ libsim_srcs = files(
 )
 
 if(build_target == 'linux' or build_target == 'win64')
-libsim_srcs += 'glad.c'
+libsim_srcs += files('glad.c')
 endif

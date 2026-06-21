@@ -51,6 +51,10 @@ extern int NitroSpMain(void * arg);
 #include <signal.h>
 #endif
 
+#ifdef SDK_BUILD_NX
+#include "switch.h"
+#endif
+
 #include "sim_g2.h"
 
 //Simulator configuration
@@ -1275,7 +1279,9 @@ void * SIM_RenderInit(void * arg){
     SDL_GL_SwapWindow(window);
 
     //Setup ImGui TODO bring in imgui
+    #ifndef SDK_BUILD_NX
     SIM_GUI_Init(window, context);
+    #endif
 
     clock_gettime(CLOCK_MONOTONIC, &s_SIM_lastFrameEnd);
 }
@@ -1756,7 +1762,9 @@ void * SIM_Render(void *arg){
 
         while( SDL_PollEvent(&Event))
         {
+            #ifndef SDK_BUILD_NX
             SIM_GUI_ProcessEvent(&Event);
+            #endif
             if(Event.type == SDL_WINDOWEVENT)
             {
                 switch(Event.window.event) {
@@ -1806,7 +1814,9 @@ void * SIM_Render(void *arg){
                     s_reg_PAD_KEYINPUT = s_reg_PAD_KEYINPUT & 0b1111111111111011;
                 } else if(keyRead == s_SIM_config.padSettings.guiKey) {
                     //Toggle Debug GUI
+                    #ifndef SDK_BUILD_NX
                     SIM_GUI_Toggle();
+                    #endif
                 }
             }
             if(Event.type == SDL_KEYUP)
@@ -1941,8 +1951,10 @@ void * SIM_Render(void *arg){
             s_tpData.touch = 0;
         }
 
+        #ifndef SDK_BUILD_NX
         SIM_GUI_NewFrame();
         SIM_GUI_Main();
+        #endif
 
         memset( bgtex, 0, sizeof(u8) * 4 * SIM_NDS_SCREEN_WIDTH * SIM_NDS_SCREEN_HEIGHT * 2 );
         memset( bg0tex, 0, sizeof(u8) * 4 * SIM_NDS_SCREEN_WIDTH * SIM_NDS_SCREEN_HEIGHT * 2 );
@@ -1969,7 +1981,9 @@ void * SIM_Render(void *arg){
         s_HW_INTR_CHECK_BUF |= 1;
         *((u32*)HW_VBLANK_COUNT_BUF) = *((u32*)HW_VBLANK_COUNT_BUF) + 1;
 
+        #ifndef SDK_BUILD_NX
         SIM_GUI_Render();
+        #endif
 
         // Calculate frametime
         struct timespec curTime;
