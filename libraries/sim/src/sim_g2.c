@@ -6,6 +6,8 @@
 #include <simulator/glad/glad.h>
 #endif
 
+#include "tracy/TracyC.h"
+
 //TODO: Move more of these in here as statics
 extern u8 bgtex[4*SIM_NDS_SCREEN_WIDTH*SIM_NDS_SCREEN_HEIGHT*2];
 extern u8 bg0tex[4*SIM_NDS_SCREEN_WIDTH*SIM_NDS_SCREEN_HEIGHT*2];
@@ -56,6 +58,7 @@ static void* getBgExtPlttVramBank(BOOL isSub);
 
 void G2SIM_DrawBG( u8 bgNum, u8 bgMode, u8 bg03D, u8 isSub )
 {
+    TracyCZone(ctx, 1);
     if(isSub){
         if(!s_SIM_DBG_BGSenable[bgNum]) {
             // Return early if the BgNum has been disabled
@@ -249,6 +252,7 @@ void G2SIM_DrawBG( u8 bgNum, u8 bgMode, u8 bg03D, u8 isSub )
     glBindTexture(GL_TEXTURE_2D, s_bgTextureId[bgNum]);
 
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SIM_NDS_SCREEN_WIDTH, SIM_NDS_SCREEN_HEIGHT*2, GL_RGBA, GL_UNSIGNED_BYTE, (void *)bgTexBuf);
+    TracyCZoneEnd(ctx);
 }
 
 void G2SIM_DrawOBJ( u32 line, u8 isSub, int bgnum ) {
@@ -298,6 +302,7 @@ void G2SIM_DrawOBJ( u32 line, u8 isSub, int bgnum ) {
         64, 32, 64, 8
     };
 
+    TracyCZone(ctx, 1);
     for(int sprnum = 127; sprnum >= 0; sprnum-- )
     {
         u16* attrib = &oam[sprnum*4];
@@ -378,6 +383,7 @@ void G2SIM_DrawOBJ( u32 line, u8 isSub, int bgnum ) {
             DrawOBJ_Normal(sprnum, width, height, xpos, ypos, isSub, iswin);
         }
     }
+    TracyCZoneEnd(ctx);
 }
 
 // Draws a pixel to the screenBuf. X and Y coordinates are in local DS screen coordinates
@@ -404,6 +410,7 @@ void G2SIM_PlotPixel(u8 * screenBuf, u8 r, u8 g, u8 b, u32 x, u32 y, BOOL isSub)
 }
 
 static void DrawBGLine_Text(u32 line, u32 bgnum, u8 mosaic, u8 isSub){
+    TracyCZone(ctx, 1);
     u8 * bgvram = (u8 *)s_HW_BG_VRAM;
     u8 * pixelBuf;
     u32 tilesetaddr;
@@ -790,10 +797,12 @@ static void DrawBGLine_Text(u32 line, u32 bgnum, u8 mosaic, u8 isSub){
 
     }
 
+    TracyCZoneEnd(ctx);
 }
 
 static void DrawBGLine_Affine(u32 line, u32 bgnum, u8 mosaic, u8 isSub)
 {
+    TracyCZone(ctx, 1);
     u32 tilesetaddr;
     u32 tilemapaddr;
     u16* pal;
@@ -1020,10 +1029,12 @@ static void DrawBGLine_Affine(u32 line, u32 bgnum, u8 mosaic, u8 isSub)
     }
 
 
+    TracyCZoneEnd(ctx);
 }
 
 static void DrawBGLine_Extended(u32 line, u32 bgnum, u8 mosaic, u8 isSub)
 {
+    TracyCZone(ctx, 1);
     u32 tilesetaddr;
     u32 tilemapaddr;
     u16* pal;
@@ -1398,10 +1409,12 @@ static void DrawBGLine_Extended(u32 line, u32 bgnum, u8 mosaic, u8 isSub)
         bgAffineX[bgnum] += rotB;
         bgAffineY[bgnum] += rotD;	
     }
+    TracyCZoneEnd(ctx);
 }
 
 static void DrawOBJ_RotScale(u32 num, u32 boundwidth, u32 boundheight, u32 width, u32 height, s32 xpos, s32 ypos, u8 isSub, u8 isWin)
 {
+    TracyCZone(ctx, 1);
     u32 dispcnt;
     u16 * oam;
     u16 * attrib;
@@ -1488,6 +1501,7 @@ static void DrawOBJ_RotScale(u32 num, u32 boundwidth, u32 boundheight, u32 width
                 // 'reserved'
                 // draws nothing
 
+                TracyCZoneEnd(ctx);
                 return;
             }
             else
@@ -1627,10 +1641,12 @@ static void DrawOBJ_RotScale(u32 num, u32 boundwidth, u32 boundheight, u32 width
             }
         }
     }
+    TracyCZoneEnd(ctx);
 }
 
 static void DrawOBJ_Normal(u32 num, u32 width, u32 height, s32 xpos, s32 ypos, u8 isSub, u8 isWin)
 {
+    TracyCZone(ctx, 1);
     u32 dispcnt;
     u16 * oam;
     u16 * attrib;
@@ -1698,7 +1714,10 @@ static void DrawOBJ_Normal(u32 num, u32 width, u32 height, s32 xpos, s32 ypos, u
         // bitmap sprite
 
         u32 alpha = attrib[2] >> 12;
-        if (!alpha) return;
+        if (!alpha) {
+            TracyCZoneEnd(ctx);
+            return;
+        }
         alpha++;
 
         pixelattr |= (0xC0000000 | (alpha << 24));
@@ -1711,6 +1730,7 @@ static void DrawOBJ_Normal(u32 num, u32 width, u32 height, s32 xpos, s32 ypos, u
                 // 'reserved'
                 // draws nothing
 
+                TracyCZoneEnd(ctx);
                 return;
             }
             else
@@ -1906,6 +1926,8 @@ static void DrawOBJ_Normal(u32 num, u32 width, u32 height, s32 xpos, s32 ypos, u
             }
         }
     }
+
+    TracyCZoneEnd(ctx);
 }
 
 static void* getBgExtPlttVramBank(BOOL isSub)
