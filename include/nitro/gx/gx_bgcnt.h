@@ -582,7 +582,11 @@ static inline void G2_SetBG1Control (GXBGScrSizeText screenSize,
 
 static inline GXBg01Control G2_GetBG1Control (void)
 {
+	#ifdef __cplusplus
+	return *(GXBg01Control *)REG_BG1CNT_ADDR;
+	#else
 	return *(volatile GXBg01Control *)REG_BG1CNT_ADDR;
+	#endif
 }
 
 static inline void G2S_SetBG1Control (GXBGScrSizeText screenSize,
